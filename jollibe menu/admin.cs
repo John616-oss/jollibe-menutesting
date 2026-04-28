@@ -59,7 +59,7 @@ namespace jollibe_menu
             try
             {
                 db.Open();
-                string query = "UPDATE admin SET product = @product, price = @price, category = @category, quantity = @quantity WHERE id = @id";
+                string query = " UPDATE admin SET product = @product, price = @price, category = @category, quantity = @quantity WHERE id = @id";
                 MySql.Data.MySqlClient.MySqlCommand cmd = new MySql.Data.MySqlClient.MySqlCommand(query, db.Connection);
                 cmd.Parameters.AddWithValue("@id", UpdateID);
                 cmd.Parameters.AddWithValue("@product", UpdateProduct);
