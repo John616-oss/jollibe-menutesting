@@ -54,6 +54,7 @@
             txtID = new TextBox();
             button4 = new Button();
             label7 = new Label();
+            btnAdd = new Button();
             panel1.SuspendLayout();
             panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
@@ -186,6 +187,7 @@
             // panel3
             // 
             panel3.BackColor = Color.LightSteelBlue;
+            panel3.Controls.Add(btnAdd);
             panel3.Controls.Add(label8);
             panel3.Controls.Add(txtQuantity);
             panel3.Controls.Add(label6);
@@ -264,7 +266,7 @@
             // btnDelete
             // 
             btnDelete.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnDelete.Location = new Point(52, 378);
+            btnDelete.Location = new Point(52, 419);
             btnDelete.Name = "btnDelete";
             btnDelete.Size = new Size(195, 35);
             btnDelete.TabIndex = 5;
@@ -330,6 +332,17 @@
             label7.TabIndex = 7;
             label7.Text = "STOCKS";
             // 
+            // btnAdd
+            // 
+            btnAdd.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnAdd.Location = new Point(52, 378);
+            btnAdd.Name = "btnAdd";
+            btnAdd.Size = new Size(195, 35);
+            btnAdd.TabIndex = 12;
+            btnAdd.Text = "Add Record";
+            btnAdd.UseVisualStyleBackColor = true;
+            btnAdd.Click += btnAdd_Click;
+            // 
             // admin
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -386,5 +399,6 @@
         private Label label7;
         private Label label8;
         private TextBox txtQuantity;
+        private Button btnAdd;
     }
 }
