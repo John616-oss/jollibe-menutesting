@@ -12,9 +12,9 @@ using System.Windows.Forms;
 
 namespace jollibe_menu
 {
-    public partial class admin : Form
+    public partial class Admin : Form
     {
-        public admin()
+        public Admin()
         {
             InitializeComponent();
         }
@@ -26,9 +26,10 @@ namespace jollibe_menu
             {
                 db.Open();
                 string query = "SELECT * FROM stocks";
-                MySqlDataAdapter da = new MySqlDataAdapter(query, db.connection);
+                MySql.Data.MySqlClient.MySqlCommand cmd = new MySql.Data.MySqlClient.MySqlCommand(query, db.Connection);
 
                 DataTable dt = new DataTable();
+                MySql.Data.MySqlClient.MySqlDataAdapter da = new MySql.Data.MySqlClient.MySqlDataAdapter(cmd);
                 da.Fill(dt);
 
                 dataGridView1.DataSource = dt;
@@ -64,7 +65,53 @@ namespace jollibe_menu
 
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
+            if (e.RowIndex >= 0)
+            {
+                DataGridViewRow row = this.dataGridView1.Rows[e.RowIndex];
 
+                // Ilipat ang data mula sa cells papunta sa TextBoxes
+                // Ang [0], [1] ay ang index ng columns mo sa database/grid
+                txtID.Text = row.Cells[0].Value.ToString();
+                txtProduct.Text = row.Cells[1].Value.ToString();
+                txtPrice.Text = row.Cells[2].Value.ToString();
+                txtCategory.Text = row.Cells[3].Value.ToString();
+                txtQuantity.Text = row.Cells[4].Value.ToString();
+            }
+            try
+            {
+                // 1. Kunin ang values (Nasa screenshot mo na ito)
+                string UpdateID = txtID.Text.Trim();
+                string UpdateProduct = txtProduct.Text.Trim();
+                int UpdatePrice = int.Parse(txtPrice.Text.Trim());
+                string UpdateCategory = txtCategory.Text.Trim();
+                int UpdateQuantity = int.Parse(txtQuantity.Text.Trim());
+
+                // 2. MySQL Connection gamit ang DBConnect
+                DBConnect db = new DBConnect();
+                db.Connection.Open();
+
+                // 3. Query - Pwedeng INSERT kung bago, o UPDATE kung existing na
+                string query = "UPDATE stocks SET products=@prod, price=@price, category=@cat, quantity=@qty WHERE id=@id";
+
+                MySql.Data.MySqlClient.MySqlCommand cmd = new MySql.Data.MySqlClient.MySqlCommand(query, db.Connection);
+                cmd.Parameters.AddWithValue("@id", UpdateID);
+                cmd.Parameters.AddWithValue("@prod", UpdateProduct);
+                cmd.Parameters.AddWithValue("@price", UpdatePrice);
+                cmd.Parameters.AddWithValue("@cat", UpdateCategory);
+                cmd.Parameters.AddWithValue("@qty", UpdateQuantity);
+
+                cmd.ExecuteNonQuery();
+                db.Connection.Close();
+
+                MessageBox.Show("Record Updated Successfully!");
+
+                // 4. Tawagin ang method para mag-refresh ang DataGridView
+                LoadDataGridView();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error: " + ex.Message);
+            }
         }
 
         private void btnSave_Click(object sender, EventArgs e)
@@ -108,33 +155,43 @@ namespace jollibe_menu
 
         }
         private void btnAddRecord_Click(object sender, EventArgs e)
+
         {
             DBConnect db = new DBConnect();
 
-            // SQL Query (MySQL syntax)
-            string query = "INSERT INTO stocks (id, products, price, category, quantity) " +
-                           "VALUES (@id, @prod, @price, @cat, @qty)";
-
             try
             {
-                db.Open();
+                string UpdateID = txtID.Text.Trim();
+                string UpdateProduct = txtProduct.Text.Trim();
+                int UpdatePrice = int.Parse(txtPrice.Text.Trim());
+                string UpdateCategory = txtCategory.Text.Trim();
+                int UpdateQuantity = int.Parse(txtQuantity.Text.Trim());
+
+                db.Open(); // Siguraduhin na ang method na 'Open' ay nasa DBConnect class mo
+
+                // Mas mainam na i-check kung tama ang table name (stocks ba o admin?)
+                string query = "UPDATE stocks SET product=@product, price=@price, category=@category, quantity=@quantity WHERE id=@id";
+
+                // Gamitin ang db.connection (depende sa name sa DBConnect class mo)
                 MySql.Data.MySqlClient.MySqlCommand cmd = new MySql.Data.MySqlClient.MySqlCommand(query, db.Connection);
 
-                // Bind parameters mula sa TextBoxes
-                cmd.Parameters.AddWithValue("@id", txtID.Text);
-                cmd.Parameters.AddWithValue("@prod", txtProduct.Text);
-                cmd.Parameters.AddWithValue("@price", txtPrice.Text);
-                cmd.Parameters.AddWithValue("@cat", txtCategory.Text);
-                cmd.Parameters.AddWithValue("@qty", txtQuantity.Text);
+                cmd.Parameters.AddWithValue("@id", UpdateID);
+                cmd.Parameters.AddWithValue("@product", UpdateProduct);
+                cmd.Parameters.AddWithValue("@price", UpdatePrice);
+                cmd.Parameters.AddWithValue("@category", UpdateCategory);
+                cmd.Parameters.AddWithValue("@quantity", UpdateQuantity);
 
-                cmd.ExecuteNonQuery();
-                MessageBox.Show("Record added to MySQL!", "Success");
+                int result = cmd.ExecuteNonQuery();
 
-
-
-                // I-refresh ang DataGridView
-                LoadDataGridView();
-                ClearFields();
+                if (result > 0)
+                {
+                    MessageBox.Show("Record Updated Successfully!");
+                    LoadDataGridView(); // Tawagin ito para mag-refresh ang table sa screen
+                }
+                else
+                {
+                    MessageBox.Show("No record found with that ID.");
+                }
             }
             catch (Exception ex)
             {
@@ -144,7 +201,6 @@ namespace jollibe_menu
             {
                 db.Close();
             }
-
         }
 
         private void ClearFields()

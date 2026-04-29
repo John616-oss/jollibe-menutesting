@@ -69,7 +69,7 @@ namespace jollibe_menu
                     if (count > 0)
                     {
                         MessageBox.Show("Login successful! Welcome, Admin.");
-                        new admin().Show();
+                        new Admin().Show();
                         this.Hide();
 
                     }

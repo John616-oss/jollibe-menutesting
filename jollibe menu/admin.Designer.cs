@@ -1,6 +1,6 @@
 ﻿namespace jollibe_menu
 {
-    partial class admin
+    partial class Admin
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(admin));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Admin));
             panel1 = new Panel();
             label2 = new Label();
             panel2 = new Panel();
@@ -341,7 +341,7 @@
             btnAdd.TabIndex = 12;
             btnAdd.Text = "Add Record";
             btnAdd.UseVisualStyleBackColor = true;
-            btnAdd.Click += btnAdd_Click;
+            btnAdd.Click += btnAddRecord_Click;
             // 
             // admin
             // 
